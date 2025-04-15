@@ -1,15 +1,14 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../instances/mysql";
 
-export class Aluno extends Model {
+export class Professores extends Model {
     public id!: number;
     public nome!: string;
     public email!: string;
     public matricula!: string;
-    public id_turma!: number; 
 }
 
-Aluno.init(
+Professores.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -18,7 +17,7 @@ Aluno.init(
         },
         nome: {
             type: DataTypes.STRING,
-            unique: true,
+            unique: false,
             allowNull: false,
         },
         email: {
@@ -34,8 +33,8 @@ Aluno.init(
     },
     {
         sequelize,
-        tableName: "alunos",
-        paranoid:true,
-        timestamps: true,
+        tableName: "professores",
+        paranoid:false,
+        timestamps: false,
     }
 );

@@ -1,47 +1,68 @@
-Para rodar o projeto
+# 🎯 Objetivo Geral
 
-npm install
-
-npm run start-dev
+Você foi contratado para desenvolver uma API RESTful para gerenciar um sistema escolar. A escola possui alunos, professores, turmas, cursos, disciplinas, notas e controle de presença. Sua missão é criar endpoints que possibilitem o gerenciamento completo desses dados, além de realizar cálculos como médias de notas, percentual de presença e identificar aprovação ou reprovação dos alunos.
 
 
-# Dependencias
+# 📌 Requisitos da API
 
-O Dotenv serve para criar um arquivo de váriaveis de ambiente no repositório, onde é configurado a definição do usuário para a conexão apenas mudando o que a variável irá receber em um arquivo separado.
+Implemente os seguintes endpoints:
+📁 CRUDs básicos:
 
-O Cors é uma api para definir uma segurança de quais os websites terão acesso aos resources do servidor.
+    POST /alunos – Cadastrar novo aluno.
 
-O Express é utilizado para features como gerenciar requisições da web e mobile, deixar a rota mais robusta e completa.
+    GET /disciplinas/:id/alunos – Listar alunos matriculados em uma disciplina.
+
+    POST /disciplinas/:id/alunos – Matricular aluno na disciplina.
+
+    POST /disciplinas/:id/notas – Registrar nota de um aluno.
+
+    POST /disciplinas/:id/presencas – Registrar presença de um aluno em uma data.
+
+# 📊 Funcionalidades intermediárias:
+
+    GET /alunos/:id/notas – Listar todas as notas de um aluno com as médias por disciplina.
+
+    GET /alunos/:id/presencas – Retornar percentual de presença do aluno em cada disciplina.
+
+    GET /disciplinas/:id/reprovados – Listar alunos reprovados por nota ou presença.
+
+    GET /alunos/:id/situacao – Mostrar se o aluno está aprovado ou reprovado em cada disciplina.
+
+    Critério de aprovação:
+
+        Média ≥ 7.0
+
+        Presença ≥ 75%
+
+# ✅ Critérios de Avaliação
+
+    Utilização adequada do TypeScript.
+
+    Uso correto de relacionamentos no banco de dados.
+
+    Código modular e organizado (por exemplo: separação de rotas, controllers, services).
+
+    Uso de boas práticas REST.
+
+    Testes com Jest (ao menos para uma das regras de negócio: média ou presença).
 
 
-# Atividade:
+# 🧱 Base de Dados
 
-Crie uma outra api
+A estrutura do banco já está definida com as seguintes entidades principais, todas as tabelas devem ter softdelete e timestamps:
 
-### Eventos e participantes 
+    alunos (com vínculo a uma turma)
 
-* Um participante pode se inscrever em vários eventos
+    professores
 
-* Um evento pode ter vários participantes inscritos
+    cursos
 
-* Crie uma tabela intermediária evento_participantes para armazenar essa relação
+    turmas (vinculadas a cursos)
 
-## Tabelas:
-CREATE TABLE participantes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE
-);
+    disciplinas (ministradas por professores)
 
-CREATE TABLE eventos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL UNIQUE
-);
+    aluno_disciplinas (matrícula do aluno nas disciplinas)
 
-CREATE TABLE participante_evento (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    participanteId INT NOT NULL,
-    eventosId INT NOT NULL,
-    FOREIGN KEY (participanteId) REFERENCES participantes(id) ON DELETE CASCADE,
-    FOREIGN KEY (eventosId) REFERENCES eventos(id) ON DELETE CASCADE
-);
+    notas (avaliativas, por aluno/disciplina)
+
+    presencas (controle de frequência por disciplina)
