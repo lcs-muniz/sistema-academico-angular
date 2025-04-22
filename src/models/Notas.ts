@@ -1,5 +1,7 @@
 import { Model, DataTypes, DecimalDataType } from "sequelize";
 import { sequelize } from "../instances/mysql";
+import { Aluno } from "./Aluno";
+import { Disciplina } from "./Disciplina";
 
 export class Notas extends Model{
     public id!: number;
@@ -21,11 +23,21 @@ Notas.init (
             type: DataTypes.INTEGER,
             allowNull: true,
             unique: true,
+            references: {
+                model: Aluno,
+                key: "id",
+            },
+            onDelete: "CASCADE",
         },
         disciplinaId: {
             type: DataTypes.TEXT,
             allowNull: true,
             unique: true,
+            references: {
+                model: Disciplina,
+                key: "id",
+            },
+            onDelete: "CASCADE",
         },
         nota: {
             type: DataTypes.DECIMAL,
@@ -40,7 +52,7 @@ Notas.init (
     },
     {
         sequelize,
-        tableName: "cursos",
+        tableName: "notas",
         timestamps: false, 
         paranoid: false,
     }

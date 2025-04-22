@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../instances/mysql";
+import { Turmas } from "./Turmas";
 
 export class Aluno extends Model {
     public id!: number;
@@ -18,7 +19,7 @@ Aluno.init(
         },
         nome: {
             type: DataTypes.STRING,
-            unique: true,
+            unique: false,
             allowNull: false,
         },
         email: {
@@ -30,6 +31,15 @@ Aluno.init(
             type: DataTypes.STRING,
             unique: true,
             allowNull: false,
+        },
+        id_turma: {
+            type: DataTypes.INTEGER,
+            unique: true,
+            allowNull: true,
+            references: {
+                model: Turmas,
+                key: "id",
+            },
         },
     },
     {
