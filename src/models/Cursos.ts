@@ -4,7 +4,7 @@ import { sequelize } from "../instances/mysql";
 export class Cursos extends Model{
     public id!: number;
     public nome!: string;
-    public descricao!: string;
+    public descricao!: string | null;
 
 }
 
@@ -19,7 +19,7 @@ Cursos.init (
         nome: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
+            unique: false,
         },
 
         descricao:{
@@ -31,7 +31,7 @@ Cursos.init (
     {
         sequelize,
         tableName: "cursos",
-        timestamps: false, 
-        paranoid: false,
+        timestamps: true, 
+        paranoid: true,
     }
 )

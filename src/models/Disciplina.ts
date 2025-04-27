@@ -5,7 +5,7 @@ import { Professores } from "./Professores";
 export class Disciplina extends Model{
     public id!: number;
     public nome!: string;
-    public id_professor!: number;
+    public id_professor!: number | null;
 }
 
 Disciplina.init(
@@ -17,13 +17,12 @@ Disciplina.init(
         },
         nome: {
             type: DataTypes.STRING,
-            allowNull: false,
             unique: false,
         },
         id_professor: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            unique: true,
+            unique: false,
             references: {
                 model: Professores,
                 key: "id",
@@ -33,7 +32,7 @@ Disciplina.init(
     {
         sequelize,
         tableName: "disciplinas",
-        timestamps: false, 
-        paranoid: false,
+        timestamps: true, 
+        paranoid: true,
     }
 )

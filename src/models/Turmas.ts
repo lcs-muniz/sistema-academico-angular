@@ -5,8 +5,8 @@ import { Cursos } from "./Cursos";
 export class Turmas extends Model {
     public id!: number;
     public nome!: string;
-    public periodo!: string;
-    public id_curso!: number;
+    public periodo!: string | null;
+    public id_curso!: number | null;
 }
 
 Turmas.init(
@@ -26,7 +26,7 @@ Turmas.init(
             unique: false,
             allowNull: true,
         },
-        id_cursos: {
+        id_curso: {
             type: DataTypes.INTEGER,
             allowNull: true,
             references: {
@@ -39,7 +39,7 @@ Turmas.init(
     {
         sequelize,
         tableName: "turmas",
-        paranoid:false,
-        timestamps: false,
+        paranoid: true,
+        timestamps: true,
     }
 );

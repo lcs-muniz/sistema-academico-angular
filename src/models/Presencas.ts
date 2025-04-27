@@ -5,10 +5,10 @@ import { Disciplina } from './Disciplina';
 
 export class Presencas extends Model {
     public id!: number;
-    public alunoId!: number;
-    public disciplinaId!: number;
-    public data!: Date;
-    public presente!: number;
+    public alunoId!: number | null;
+    public disciplinaId!: number | null;
+    public data!: Date | null;
+    public presente!: number | null;
 }
 
 Presencas.init (
@@ -39,19 +39,16 @@ Presencas.init (
         data: {
             type: DataTypes.DATE,
             allowNull: true,
-            unique: false,
-
         },
         presente: {
             type: DataTypes.TINYINT,
             allowNull: true,
-            unique: false,
         },
     },
     {
         sequelize,
         tableName: 'presencas',
-        timestamps: false,
-        paranoid: false,
+        timestamps: true,
+        paranoid: true,
     }
 )

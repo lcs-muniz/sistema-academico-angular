@@ -22,7 +22,7 @@ Notas.init (
         alunoId: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            unique: true,
+            unique: false,
             references: {
                 model: Aluno,
                 key: "id",
@@ -30,9 +30,9 @@ Notas.init (
             onDelete: "CASCADE",
         },
         disciplinaId: {
-            type: DataTypes.TEXT,
+            type: DataTypes.INTEGER,
             allowNull: true,
-            unique: true,
+            unique: false,
             references: {
                 model: Disciplina,
                 key: "id",
@@ -40,20 +40,18 @@ Notas.init (
             onDelete: "CASCADE",
         },
         nota: {
-            type: DataTypes.DECIMAL,
+            type: DataTypes.DECIMAL(5,2),
             allowNull: true,
-            unique: false,
         },
         data_avaliacao: {
             type: DataTypes.DATE,
             allowNull: true,
-            unique: false,
         },
     },
     {
         sequelize,
         tableName: "notas",
-        timestamps: false, 
-        paranoid: false,
+        timestamps: true, 
+        paranoid: true,
     }
 )

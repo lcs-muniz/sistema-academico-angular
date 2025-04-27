@@ -38,6 +38,7 @@ AlunoDisciplina.init (
     {
         sequelize,
         tableName: "aluno_disciplinas",
-        timestamps: false,
+        timestamps: true,
+        paranoid: true,
     }
 );

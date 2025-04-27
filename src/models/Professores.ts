@@ -34,7 +34,7 @@ Professores.init(
     {
         sequelize,
         tableName: "professores",
-        paranoid:false,
-        timestamps: false,
+        paranoid: true,
+        timestamps: true,
     }
 );
