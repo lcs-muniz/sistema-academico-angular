@@ -27,7 +27,7 @@ AlunoDisciplina.init (
         },
         disciplinaId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: Disciplina,
                 key: "id",
@@ -38,19 +38,6 @@ AlunoDisciplina.init (
     {
         sequelize,
         tableName: "aluno_disciplinas",
-        timestamps: true,
-        paranoid: true,
+        timestamps: false,
     }
 );
-
-Aluno.belongsToMany(Disciplina, 
-    {
-    through: AlunoDisciplina,
-    foreignKey: "alunoId",
-    });
-
-Disciplina.belongsToMany(Aluno, 
-    {
-    through: AlunoDisciplina,
-    foreignKey: "disciplinaId",
-    });

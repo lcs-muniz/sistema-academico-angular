@@ -7,7 +7,7 @@ export class Aluno extends Model {
     public nome!: string;
     public email!: string;
     public matricula!: string;
-    public id_turma!: number | null; 
+    public id_turma!: number; 
 }
 
 Aluno.init(
@@ -34,7 +34,7 @@ Aluno.init(
         },
         id_turma: {
             type: DataTypes.INTEGER,
-            unique: false,
+            unique: true,
             allowNull: true,
             references: {
                 model: Turmas,
@@ -47,7 +47,5 @@ Aluno.init(
         tableName: "alunos",
         paranoid:true,
         timestamps: true,
-    });
-
-Aluno.belongsTo(Turmas, { foreignKey: "id_turma" });
-Turmas.hasMany(Aluno, { foreignKey: "id_turma" });
+    }
+);

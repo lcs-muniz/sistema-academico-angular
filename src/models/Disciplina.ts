@@ -5,7 +5,7 @@ import { Professores } from "./Professores";
 export class Disciplina extends Model{
     public id!: number;
     public nome!: string;
-    public id_professor!: number | null;
+    public id_professor!: number;
 }
 
 Disciplina.init(
@@ -23,7 +23,7 @@ Disciplina.init(
         id_professor: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            unique: false,
+            unique: true,
             references: {
                 model: Professores,
                 key: "id",
@@ -33,10 +33,7 @@ Disciplina.init(
     {
         sequelize,
         tableName: "disciplinas",
-        timestamps: true, 
-        paranoid: true,
+        timestamps: false, 
+        paranoid: false,
     }
 )
-
-Disciplina.belongsTo(Professores, { foreignKey: "id_professor" });
-Professores.hasMany(Disciplina, { foreignKey: "id_professor" });
