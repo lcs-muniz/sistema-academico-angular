@@ -1,4 +1,5 @@
-import { Model, DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
+
 import { sequelize } from '../instances/mysql';
 import { Aluno } from './Aluno';
 import { Disciplina } from './Disciplina';

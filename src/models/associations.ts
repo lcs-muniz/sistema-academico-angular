@@ -1,11 +1,11 @@
-import { Aluno } from "./Aluno";
-import { Disciplina } from "./Disciplina";
-import { AlunoDisciplina } from "./AlunoDisciplina";
-import { Turmas } from "./Turmas";
-import { Cursos } from "./Cursos";
-import { Professores } from "./Professores";
-import { Notas } from "./Notas";
-import { Presencas } from "./Presencas";
+import { Aluno } from './Aluno';
+import { AlunoDisciplina } from './AlunoDisciplina';
+import { Cursos } from './Cursos';
+import { Disciplina } from './Disciplina';
+import { Notas } from './Notas';
+import { Presencas } from './Presencas';
+import { Professores } from './Professores';
+import { Turmas } from './Turmas';
 
 Aluno.belongsToMany(Disciplina, {
     through: AlunoDisciplina,

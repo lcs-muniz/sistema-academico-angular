@@ -1,7 +1,8 @@
-import { Model, DataTypes, DecimalDataType } from "sequelize";
-import { sequelize } from "../instances/mysql";
-import { Aluno } from "./Aluno";
-import { Disciplina } from "./Disciplina";
+import { DataTypes, DecimalDataType, Model } from 'sequelize';
+
+import { sequelize } from '../instances/mysql';
+import { Aluno } from './Aluno';
+import { Disciplina } from './Disciplina';
 
 export class Notas extends Model{
     public id!: number;
