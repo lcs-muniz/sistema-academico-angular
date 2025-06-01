@@ -12,6 +12,21 @@ export const listarPresencas = async (
   return res.json(presencas);
 };
 
+export const buscarPresencaPorId = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const presencaId = +req.params.presencaId;
+    if (isNaN(presencaId)) {
+      return res.status(400).json({ error: 'ID da presenca inválido' });
+    }
+
+    const presenca = await service.buscarPresencaPorId(presencaId);
+    return res.json(presenca);
+  } catch (err: any) {
+    const status = err.message.includes('não encontrada') ? 404 : 500;
+    return res.status(status).json({ error: err.message });
+  }
+};
+
 export const cadastrarPresenca = async (
   req: Request,
   res: Response

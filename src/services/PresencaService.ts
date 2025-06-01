@@ -5,7 +5,7 @@ export class PresencaService {
     return Presencas.findAll();
   }
 
-  async buscarPorId(presencaId: number): Promise<Presencas> {
+  async buscarPresencaPorId(presencaId: number): Promise<Presencas> {
     const presenca = await Presencas.findByPk(presencaId);
     if (!presenca) throw new Error('Presença não encontrada');
     return presenca;
@@ -29,13 +29,13 @@ export class PresencaService {
       presente: boolean;
     }>
   ): Promise<Presencas> {
-    const presenca = await this.buscarPorId(presencaId);
+    const presenca = await this.buscarPresencaPorId(presencaId);
     await presenca.update(dados);
     return presenca;
   }
 
   async deletar(presencaId: number): Promise<void> {
-    const presenca = await this.buscarPorId(presencaId);
+    const presenca = await this.buscarPresencaPorId(presencaId);
     await presenca.destroy();
   }
 
