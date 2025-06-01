@@ -10,6 +10,14 @@ export class AlunoDisciplinaService {
     return (aluno as any).Disciplinas as Disciplina[];
   }
 
+  async listarAlunosDaDisciplina(disciplinaId: number): Promise<Aluno[]> {
+    const disciplina = await Disciplina.findByPk(disciplinaId, {
+      include: { model: Aluno }
+    });
+    if (!disciplina) throw new Error('Disciplina não encontrado');
+    return (disciplina as any).Alunos as Aluno[];
+  }
+
   async vincular(alunoId: number, disciplinaId: number): Promise<void> {
     const aluno = await Aluno.findByPk(alunoId);
     if (!aluno) throw new Error('Aluno não encontrado');

@@ -16,6 +16,18 @@ export const listarDisciplinasDoAluno = async ( req: Request, res: Response ): P
   }
 };
 
+export const listarAlunosDaDisciplina = async ( req: Request, res: Response ): Promise<Response> => {
+  try {
+    const disciplinaId = +req.params.disciplinaId;
+    const alunos = await service.listarAlunosDaDisciplina(disciplinaId);
+    return res.json(alunos);
+  } catch (err: any) {
+    return res.status(err.message.includes('não encontrado') ? 404 : 400).json({
+      error: err.message
+    });
+  }
+};
+
 export const vincularAlunoDisciplina = async ( req: Request, res: Response): Promise<Response> => {
   try {
     const { alunoId, disciplinaId } = req.body;

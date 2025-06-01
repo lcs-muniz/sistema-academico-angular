@@ -24,4 +24,5 @@ router.use('/notas', notaRoutes);
 router.use('/presencas', presencaRoutes);
 router.use('/aluno-disciplina', alunoDisciplinaRoutes);
 
+
 export default router;
