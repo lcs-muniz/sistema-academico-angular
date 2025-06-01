@@ -1,77 +1,48 @@
-import { Request, Response } from "express";
-import { Disciplina } from "../models/Disciplina";
-import { AlunoDisciplina } from "../models/AlunoDisciplina";
+import { Request, Response } from 'express';
 
-export const listarDisciplinas = async (req: Request, res: Response) : Promise<Response> => {
-    const disciplinas = await Disciplina.findAll();
-    return res.json(disciplinas);
-}
+import { DisciplinaService } from '../services/DisciplinaService';
 
-export const cadastrarDisciplina = async (req: Request, res: Response) : Promise<Response> => {
-    const { nome } = req.body;
+const disciplinaService = new DisciplinaService();
 
-    if (nome){
-        let disciplinaExistente = await Disciplina.findOne({where: { nome } });
-        if(!disciplinaExistente) {
-            let novaDisciplina = await Disciplina.create({ nome });
-
-            res.status(201);
-            return res.json({
-                message: "Disciplina cadastrada com sucesso.", 
-                novaDisciplina
-            });
-        } else{
-            return res.status(400).json({ error: "Nome da disciplina já existe."});
-        }
-    }
-
-    return res.status(400).json({ error: "Nome da disciplina não enviado." });
+export const listarDisciplinas = async (_req: Request, res: Response) => {
+  const list = await disciplinaService.listar();
+  return res.json(list);
 };
 
-export const atualizarDisciplina = async(req: Request, res: Response) : Promise<Response> =>{
-    try {
-        const { disciplinaId } = req.params;
-        const  dadosAtualizados  = req.body;
-    
-        const disciplina = await Disciplina.findByPk(disciplinaId);
-        
-        if(!disciplinaId){
-            return res.status(400).json({error:"Disciplina não encontrado!"});
-        }
-        await disciplina?.update(dadosAtualizados, {fields: Object.keys(dadosAtualizados)});
-
-        return res.status(200).json({message: "Disciplina atualizado com sucesso.", disciplina});
-    
-    } catch (error) {
-        return res.status(400).json({message: "Erro ao atualizar a Disciplina.", error});        
-    }
+export const buscarDisciplinaPorId = async (req: Request, res: Response) : Promise<Response> => {
+  try {
+    const disciplina = await disciplinaService.buscarDisciplinaPorId(+req.params.disciplinaId);
+    return res.json(disciplina);
+  } catch (err: any) {
+    return res.status(404).json({ error: err.message });
+  }
 };
 
-export const deletarDisciplina = async(req: Request, res: Response) : Promise<Response> =>{
-    const { disciplinaId } = req.params;
-    let disciplina = await Disciplina.findByPk(disciplinaId);        
-
-    if(!disciplina){
-       return res.status(404).json({erro:"Disciplina não encontrada."});
-    }
-
-    const vinculoAluno = await AlunoDisciplina.findOne({where: {disciplinaId:disciplina.id}});
-    if(vinculoAluno) {
-        return res.status(400).json({error:"Nào é possível deletar, disciplina vinculada a um aluno"});
-    }
-
-    await disciplina.destroy();
-    return res.json("Disciplina cadastrada com sucesso.");
+export const cadastrarDisciplina = async (req: Request, res: Response) => {
+  try {
+    const nova = await disciplinaService.criar(req.body);
+    return res.status(201).json({ message: 'Disciplina cadastrada com sucesso', disciplina: nova });
+  } catch (err: any) {
+    return res.status(400).json({ error: err.message });
+  }
 };
 
-export const buscarDisciplinaPorId = async(req:Request, res: Response) : Promise<Response> =>{
-    const { disciplinaId } = req.params;
-    let disciplina = await Disciplina.findByPk(disciplinaId);
-    
-    if (!disciplina){
-        return res.status(404).json({error:"Disciplina não encontrada."});
-    }
+export const atualizarDisciplina = async (req: Request, res: Response) => {
+  try {
+    const updated = await disciplinaService.atualizar(+req.params.disciplinaId, req.body);
+    return res.json({ message: 'Disciplina atualizada com sucesso', disciplina: updated });
+  } catch (err: any) {
+    const status = err.message.includes('não encontrada') ? 404 : 400;
+    return res.status(status).json({ error: err.message });
+  }
+};
 
-    await disciplina.get(disciplinaId);
-    return res.status(200).json({message: "Disciplina Encontrada:", disciplina});
-}
+export const deletarDisciplina = async (req: Request, res: Response) => {
+  try {
+    await disciplinaService.deletar(+req.params.disciplinaId);
+    return res.json({ message: 'Disciplina deletada com sucesso' });
+  } catch (err: any) {
+    const status = err.message.includes('vinculada') ? 400 : 404;
+    return res.status(status).json({ error: err.message });
+  }
+};

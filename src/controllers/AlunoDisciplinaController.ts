@@ -1,33 +1,44 @@
-import { Request, Response } from "express";
-import { Aluno } from "../models/Aluno";
-import { Disciplina } from "../models/Disciplina";
+import { Request, Response } from 'express';
 
-export const listarDisciplinasDoAluno = async (req: Request, res: Response) : Promise <Response> => {
-    const { alunoId } = req.params;
+import { AlunoDisciplinaService } from '../services/AlunoDisciplinaService';
 
-    const aluno = await Aluno.findByPk(alunoId, {
-        include: { model: Disciplina},
+const service = new AlunoDisciplinaService();
+
+export const listarDisciplinasDoAluno = async ( req: Request, res: Response ): Promise<Response> => {
+  try {
+    const alunoId = +req.params.alunoId;
+    const disciplinas = await service.listarDisciplinasDoAluno(alunoId);
+    return res.json(disciplinas);
+  } catch (err: any) {
+    return res.status(err.message.includes('não encontrado') ? 404 : 400).json({
+      error: err.message
     });
-
-    if(aluno){
-        return res.json(aluno);
-    }
-  
-    return res.status(404).json("Aluno não encontrado.");
+  }
 };
 
-export const vincularAlunoDisciplina = async (req: Request, res: Response) : Promise <Response> => {
+export const vincularAlunoDisciplina = async ( req: Request, res: Response): Promise<Response> => {
+  try {
     const { alunoId, disciplinaId } = req.body;
+    await service.vincular(+alunoId, +disciplinaId);
+    return res.json({
+      message: 'Aluno vinculado à disciplina com sucesso.'
+    });
+  } catch (err: any) {
+    const status =
+      err.message.includes('não encontrado') ||
+      err.message.includes('Disciplina') ? 404 : 400;
+    return res.status(status).json({ error: err.message });
+  }
+};
 
-    const aluno = await Aluno.findByPk(alunoId);
-    const disciplina = await Disciplina.findByPk(disciplinaId);
-
-    if (!aluno || !disciplina){
-        return res.status(404).json({ error: "Aluno ou Disciplina não encontrado."});
-    }
-
-    await (aluno as any).addDisciplina(disciplina); 
-
-    return res.json({ message: "Aluno vinculado à disciplina com sucesso." });
-
-}
+export const desvincularAlunoDisciplina = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const alunoId = +req.params.alunoId;
+    const disciplinaId = +req.params.disciplinaId;
+    await service.desvincular(alunoId, disciplinaId);
+    return res.json({ message: 'Vínculo removido com sucesso.' });
+  } catch (err: any) {
+    const status = err.message.includes('não encontrado') ? 404 : 400;
+    return res.status(status).json({ error: err.message });
+  }
+};

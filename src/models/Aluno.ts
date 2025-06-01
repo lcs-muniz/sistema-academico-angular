@@ -1,6 +1,7 @@
-import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../instances/mysql";
-import { Turmas } from "./Turmas";
+import { DataTypes, Model } from 'sequelize';
+
+import { sequelize } from '../instances/mysql';
+import { Turmas } from './Turmas';
 
 export class Aluno extends Model {
     public id!: number;
