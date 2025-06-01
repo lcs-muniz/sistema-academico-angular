@@ -8,6 +8,7 @@ export class Aluno extends Model {
     public nome!: string;
     public email!: string;
     public matricula!: string;
+    public senha!: string;
     public id_turma!: number | null; 
 }
 
@@ -31,6 +32,11 @@ Aluno.init(
         matricula: {
             type: DataTypes.STRING,
             unique: true,
+            allowNull: false,
+        },
+        senha: {
+            type: DataTypes.STRING,
+            unique: false,
             allowNull: false,
         },
         id_turma: {

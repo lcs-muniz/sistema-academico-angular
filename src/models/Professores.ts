@@ -6,7 +6,8 @@ export class Professores extends Model {
     public id!: number;
     public nome!: string;
     public email!: string;
-    public matricula!: string;
+    public siape!: string | null;
+    public senha!: string;
 }
 
 Professores.init(
@@ -26,9 +27,13 @@ Professores.init(
             unique: true,
             allowNull: false,
         },
-        matricula: {
-            type: DataTypes.STRING,
+        siape: {
+            type: DataTypes.CHAR,
             unique: true,
+            allowNull: false,
+        },
+        senha: {
+            type: DataTypes.STRING,
             allowNull: false,
         },
     },
