@@ -5,6 +5,12 @@ export class TurmaService {
     return Turmas.findAll();
   }
 
+  async buscarTurmaPorId(id: number) {
+    const turma = await Turmas.findByPk(id);
+    if (!turma) throw new Error('Turma não encontrada');
+    return turma;
+  }
+
   async criar(data: { nome: string; periodo?: string; id_curso?: number }) {
     return Turmas.create(data);
   }

@@ -9,6 +9,15 @@ export const listarTurmas = async (_req: Request, res: Response) => {
   return res.json(turmas);
 };
 
+export const buscarTurmaPorId = async (req: Request, res: Response) : Promise<Response> => {
+  try {
+    const turma = await turmaService.buscarTurmaPorId(+req.params.turmaId);
+    return res.json(turma);
+  } catch (err: any) {
+    return res.status(404).json({ error: err.message });
+  }
+};
+
 export const cadastrarTurma = async (req: Request, res: Response) => {
   try {
     const nova = await turmaService.criar(req.body);
