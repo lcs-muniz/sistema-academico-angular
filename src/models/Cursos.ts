@@ -1,5 +1,6 @@
-import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../instances/mysql";
+import { DataTypes, Model } from 'sequelize';
+
+import { sequelize } from '../instances/mysql';
 
 export class Cursos extends Model{
     public id!: number;
