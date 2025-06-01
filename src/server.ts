@@ -1,10 +1,12 @@
-import express, { Request, Response, ErrorRequestHandler } from 'express';
-import path from 'path';
-import dotenv from 'dotenv';
+import './models/associations';
+
 import cors from 'cors';
-import apiRoutes from './routes/routes';
+import dotenv from 'dotenv';
+import express, { ErrorRequestHandler, Request, Response } from 'express';
+import path from 'path';
+
 import { conectarBanco } from './instances/mysql';
-import "./models/associations";
+import routes from './routes';
 
 dotenv.config();
 
@@ -19,7 +21,7 @@ server.use(express.static(path.join(__dirname, '../public')));
 server.use(express.json()); // Usando JSON
 
 // Definir as rotas da API
-server.use(apiRoutes);
+server.use('/api', routes);
 
 // Endpoint para caso o usuário acesse um caminho inexistente
 server.use((req: Request, res: Response) => {
