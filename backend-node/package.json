@@ -4,7 +4,7 @@
   "description": "Para rodar o projeto",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "cross-env NODE_ENV=test jest",
     "start-dev": "nodemon -e ts,json src/server.ts"
   },
   "author": "",
@@ -27,6 +27,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.13",
     "@types/supertest": "^6.0.3",
+    "cross-env": "^7.0.3",
     "jest": "^29.7.0",
     "nodemon": "^3.1.9",
     "supertest": "^7.1.0",

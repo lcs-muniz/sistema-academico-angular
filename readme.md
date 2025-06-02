@@ -1,68 +1,119 @@
-# 🎯 Objetivo Geral
+# Sistema de Autenticação e Controle Acadêmico (Fullstack)
 
-Você foi contratado para desenvolver uma API RESTful para gerenciar um sistema escolar. A escola possui alunos, professores, turmas, cursos, disciplinas, notas e controle de presença. Sua missão é criar endpoints que possibilitem o gerenciamento completo desses dados, além de realizar cálculos como médias de notas, percentual de presença e identificar aprovação ou reprovação dos alunos.
+Este projeto implementa um sistema de autenticação e controle acadêmico com um backend em Node.js/Express e um frontend em Angular. Ele permite o login de professores e alunos, controle de acesso a rotas baseado em papéis (JWT), e funcionalidades acadêmicas.
 
+## 🚀 Estrutura do Projeto
 
-# 📌 Requisitos da API
+O repositório está organizado da seguinte forma:
 
-Implemente os seguintes endpoints:
-📁 CRUDs básicos:
+-   **/backend-node**: Contém todo o código da API backend (Node.js, Express, Sequelize).
+-   **/frontend-angular**: Contém todo o código da aplicação frontend (Angular).
 
-    POST /alunos – Cadastrar novo aluno.
+## 📋 Pré-requisitos
 
-    GET /disciplinas/:id/alunos – Listar alunos matriculados em uma disciplina.
+-   [Node.js](https://nodejs.org/) (versão LTS recomendada, que inclui npm)
+-   [Angular CLI](https://angular.io/cli) instalado globalmente: `npm install -g @angular/cli`
+-   Um servidor de banco de dados MySQL.
+-   Git
 
-    POST /disciplinas/:id/alunos – Matricular aluno na disciplina.
+## ⚙️ Configuração Inicial do Projeto
 
-    POST /disciplinas/:id/notas – Registrar nota de um aluno.
+1.  **Clone o Repositório**
 
-    POST /disciplinas/:id/presencas – Registrar presença de um aluno em uma data.
+2.  **Configure as Variáveis de Ambiente do Backend:**
+    * Crie um arquivo chamado `.env` nesta pasta (`backend-node/.env`).
+    * Copie o conteúdo do arquivo `backend-node/.env.example` (se você criar um) ou adicione as seguintes variáveis, substituindo pelos seus dados:
+        ```env
+        MYSQL_DB=nome_do_seu_banco_de_dados
+        MYSQL_USER=seu_usuario_mysql
+        MYSQL_PASSWORD=sua_senha_mysql
+        MYSQL_HOST=localhost
+        MYSQL_PORT=3306
+        JWT_SECRET=coloqueUmSegredoBemForte
+        PORT=3000
+        ```
+    * **Importante:** Certifique-se de que o banco de dados (`MYSQL_DB`) já exista no seu servidor MySQL e que o usuário (`MYSQL_USER`) tenha as permissões necessárias.
+    * Volte para a pasta raiz do projeto: `cd ..`
 
-# 📊 Funcionalidades intermediárias:
+3.  **Instale Todas as Dependências (Backend e Frontend):**
+    Na **pasta raiz** do projeto, execute o comando:
+    ```bash
+    npm run install:all
+    ```
 
-    GET /alunos/:id/notas – Listar todas as notas de um aluno com as médias por disciplina.
+4.  **(Criação das Tabelas no Banco de Dados):**
+    O backend está configurado para usar `sequelize.sync({ alter: true })` durante o desenvolvimento. Isso significa que, na primeira vez que o servidor backend for iniciado com sucesso após a configuração do banco de dados no arquivo `.env`, o Sequelize tentará criar ou alterar as tabelas automaticamente para corresponder aos modelos definidos na aplicação.
+    Para referência, a estrutura DDL das tabelas também pode ser encontrada no arquivo `tables.sql`.
 
-    GET /alunos/:id/presencas – Retornar percentual de presença do aluno em cada disciplina.
+## ▶️ Como Rodar o Projeto em Desenvolvimento
 
-    GET /disciplinas/:id/reprovados – Listar alunos reprovados por nota ou presença.
+1.  **Abra um terminal na pasta raiz do projeto.**
+2.  **Execute o script de desenvolvimento principal:**
+    ```bash
+    npm run dev
+    ```
+    Este comando utiliza o `concurrently` para iniciar simultaneamente:
+    * O servidor backend Node.js (geralmente escutando na porta definida em `PORT`, ex: `http://localhost:3000`).
+    * O servidor de desenvolvimento do Angular (geralmente acessível em `http://localhost:4200`).
 
-    GET /alunos/:id/situacao – Mostrar se o aluno está aprovado ou reprovado em cada disciplina.
+3.  **Acesse a aplicação frontend** no seu navegador web através do endereço `http://localhost:4200`.
 
-    Critério de aprovação:
+O frontend Angular está configurado com um proxy (`proxy.conf.json`) para redirecionar as chamadas de API (prefixadas com `/api`) para o servidor backend.
 
-        Média ≥ 7.0
+## 🧑‍🏫 Popular Dados Iniciais (Professores/Alunos)
 
-        Presença ≥ 75%
+**Lembrando:** As senhas são armazenadas no banco de forma criptografada (usando `bcrypt`). O sistema de cadastro de usuários via API já cuida do hashing da senha.
 
-# ✅ Critérios de Avaliação
+**IMPORTANTE:** Você deve criar o cadastro de Aluno e Professor com o método abaixo, por possuirem senha criptografada
 
-    Utilização adequada do TypeScript.
+**Usar os Endpoints de Cadastro da API**
 
-    Uso correto de relacionamentos no banco de dados.
+Com o backend rodando (`npm run dev`), você pode usar uma ferramenta como Postman, Insomnia, ThunderClient (extensão com VScode) ou `curl` para fazer requisições `POST` para os endpoints de cadastro:
 
-    Código modular e organizado (por exemplo: separação de rotas, controllers, services).
+* **Cadastrar Aluno:**
+    * **URL:** `POST http://localhost:3000/api/alunos`
+    * **Headers:** `Content-Type: application/json`
+    * **Corpo (JSON):**
+        ```json
+        {
+          "nome": "Fulano de Tal Aluno",
+          "email": "aluno.fulano@exemplo.com",
+          "matricula": "2025001",
+          "senha": "senhaAluno123"
+        }
+        ```
 
-    Uso de boas práticas REST.
+* **Cadastrar Professor:**
+    * **URL:** `POST http://localhost:3000/api/professores`
+    * **Headers:** `Content-Type: application/json`
+    * **Corpo (JSON):**
+        ```json
+        {
+          "nome": "Ciclano Professor",
+          "email": "professor.ciclano@exemplo.com",
+          "siape": "1000001",
+          "senha": "senhaProf456"
+        }
+        ```
+    A API fará o hash da `senha` antes de salvá-la.
 
-    Testes com Jest (ao menos para uma das regras de negócio: média ou presença).
+**Credenciais para Login no Frontend:**
+* Para **Aluno**, use o valor do campo `matricula` como "Identificador" e a senha em texto plano (a mesma que você usou para cadastrar via API).
+* Para **Professor**, use o valor do campo `siape` como "Identificador" e a senha em texto plano.
 
+**Também no `/backend-node` contém um arquivo para população para fins de testes das funcionalidades do aplicativo: `/backend-node/seed.sql`, lembrando que precisa conter os Alunos e Professores cadastrados via /POST**
 
-# 🧱 Base de Dados
+## 🧪 Testes Automatizados do Backend
 
-A estrutura do banco já está definida com as seguintes entidades principais, todas as tabelas devem ter softdelete e timestamps:
+Para executar os testes unitários e de integração do backend (Jest + Supertest):
 
-    alunos (com vínculo a uma turma)
+1.  Navegue até a pasta do backend:
+    ```bash
+    cd backend-node
+    ```
+2.  Execute o comando de teste (conforme definido no `package.json` do backend):
+    ```bash
+    npm test
+    ```
 
-    professores
-
-    cursos
-
-    turmas (vinculadas a cursos)
-
-    disciplinas (ministradas por professores)
-
-    aluno_disciplinas (matrícula do aluno nas disciplinas)
-
-    notas (avaliativas, por aluno/disciplina)
-
-    presencas (controle de frequência por disciplina)
+---
