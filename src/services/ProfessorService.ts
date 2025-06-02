@@ -1,4 +1,7 @@
 import { Professores } from '../models/Professores';
+import bcrypt from 'bcrypt';
+
+const SALT_ROUNDS = 10;
 
 export class ProfessorService {
   async listar() {
@@ -11,15 +14,19 @@ export class ProfessorService {
     return professor;
   }
 
-  async criar(data: { nome: string; email: string; matricula: string }) {
-    return Professores.create(data);
+  async criar({ nome, senha, siape, email }: { nome: string; senha?: string; siape: String; email: string }) {
+    if (!senha) {
+      throw new Error('Senha é obrigatória para criar professor.');
+    }
+    const hashedPassword = await bcrypt.hash(senha, SALT_ROUNDS);
+    return Professores.create({ nome, email, siape, senha: hashedPassword });
   }
 
-  async atualizar(
-    professorId: number,
-    dados: Partial<{ nome: string; email: string; matricula: string }>
-  ) {
+  async atualizar(professorId: number, dados: Partial<{ nome: string; senha?: string; siape: String; email: string }>) {
     const professor = await this.buscarPorId(professorId);
+    if (dados.senha) {
+      dados.senha = await bcrypt.hash(dados.senha, SALT_ROUNDS);
+    }
     await professor.update(dados);
     return professor;
   }

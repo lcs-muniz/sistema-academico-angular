@@ -27,24 +27,16 @@ export const buscarPresencaPorId = async (req: Request, res: Response): Promise<
   }
 };
 
-export const cadastrarPresenca = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+export const cadastrarPresenca = async (req: Request, res: Response): Promise<Response> => {
   try {
     const nova = await service.criar(req.body);
-    return res
-      .status(201)
-      .json({ message: 'Presença cadastrada com sucesso', presenca: nova });
+    return res.status(201).json({ message: 'Presença cadastrada com sucesso', presenca: nova });
   } catch (err: any) {
     return res.status(400).json({ error: err.message });
   }
 };
 
-export const atualizarPresenca = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+export const atualizarPresenca = async (req: Request, res: Response): Promise<Response> => {
   try {
     const presencaId = +req.params.presencaId;
     const atualizada = await service.atualizar(presencaId, req.body);
@@ -58,10 +50,7 @@ export const atualizarPresenca = async (
   }
 };
 
-export const deletarPresenca = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+export const deletarPresenca = async (req: Request, res: Response): Promise<Response> => {
   try {
     const presencaId = +req.params.presencaId;
     await service.deletar(presencaId);

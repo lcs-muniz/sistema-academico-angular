@@ -1,5 +1,8 @@
 import { Aluno } from '../models/Aluno';
 import { AlunoDisciplina } from '../models/AlunoDisciplina';
+import bcrypt from 'bcrypt';
+
+const SALT_ROUNDS = 10;
 
 export class AlunoService {
   async listar() {
@@ -12,12 +15,19 @@ export class AlunoService {
     return aluno;
   }
 
-  async criar({ nome, email, matricula }: { nome: string; email: string; matricula: string }) {
-    return Aluno.create({ nome, email, matricula });
+  async criar({ nome, email, matricula, senha }: { nome: string; email: string; matricula: string; senha?: string }) {
+    if (!senha) {
+      throw new Error('Senha é obrigatória para criar aluno.');
+    }
+    const hashedPassword = await bcrypt.hash(senha, SALT_ROUNDS);
+    return Aluno.create({ nome, email, matricula, senha: hashedPassword });
   }
 
-  async atualizar(alunoId: number, dados: Partial<{ nome: string; email: string; matricula: string }>) {
+  async atualizar(alunoId: number, dados: Partial<{ nome: string; email: string; matricula: string; senha?: string }>) {
     const aluno = await this.buscarPorId(alunoId);
+    if (dados.senha) {
+      dados.senha = await bcrypt.hash(dados.senha, SALT_ROUNDS);
+    }
     await aluno.update(dados);
     return aluno;
   }
