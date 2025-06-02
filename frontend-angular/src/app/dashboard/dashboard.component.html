@@ -1,0 +1,45 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1 id="welcomeMessage">{{ welcomeMessage }}</h1>
+    <button (click)="logout()" class="logout-button">Logout</button>
+  </div>
+
+  <div class="actions-container">
+    <button id="btnVerProfessores" (click)="verProfessores()" [disabled]="isLoading">Ver Professores</button>
+    <button id="btnVerAlunos" *ngIf="isProfessor()" (click)="verAlunos()" [disabled]="isLoading">Ver Alunos</button>
+  </div>
+
+  <div *ngIf="isProfessor()" class="professor-actions">
+    <h3>Ações de Professor:</h3>
+    <div class="action-group">
+        ID do Aluno: <input type="text" [(ngModel)]="selectedAlunoId" placeholder="ID do Aluno" [disabled]="isLoading">
+        <button (click)="getNotasAluno()" [disabled]="isLoading">Notas do Aluno</button>
+        <button (click)="getPresencasAluno()" [disabled]="isLoading">Presenças do Aluno</button>
+        <button (click)="getSituacaoAluno()" [disabled]="isLoading">Situação do Aluno</button>
+    </div>
+    <div class="action-group">
+        ID da Disciplina: <input type="text" [(ngModel)]="selectedDisciplinaId" placeholder="ID da Disciplina" [disabled]="isLoading">
+        <button (click)="getReprovadosDisciplina()" [disabled]="isLoading">Reprovados na Disciplina</button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    </div>
+
+  <p *ngIf="apiError && !isLoading" class="error">{{ apiError }}</p>
+
+  <div id="resultado" *ngIf="apiResult && !isLoading && !apiError">
+    <h4>Resultado:</h4>
+    <div *ngIf="Array.isArray(apiResult) && apiResult.length === 0; else showResultData">
+      <p>Nenhum dado encontrado para esta consulta.</p>
+    </div>
+    <ng-template #showResultData>
+      <div *ngIf="isObjectAndEmpty(apiResult); else displayData">
+         <p>Nenhum dado encontrado para esta consulta (objeto vazio).</p>
+      </div>
+      <ng-template #displayData>
+        <pre>{{ apiResult | json }}</pre>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>

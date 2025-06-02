@@ -1,0 +1,40 @@
+<div class="login-container-wrapper">
+  <div class="login-container">
+    <h2>Login no Sistema Acadêmico</h2>
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="form-group"> <label for="identificador">SIAPE ou Matrícula:</label>
+        <input
+          type="text"
+          id="identificador"
+          name="identificador"
+          [(ngModel)]="credentials.identificador"
+          required
+          [disabled]="isLoading" #identificadorInput="ngModel"
+        />
+        <div *ngIf="identificadorInput.invalid && (identificadorInput.dirty || identificadorInput.touched)" class="error">
+          Identificador é obrigatório.
+        </div>
+      </div>
+      <div class="form-group"> <label for="senha">Senha:</label>
+        <input
+          type="password"
+          id="senha"
+          name="senha"
+          [(ngModel)]="credentials.senha"
+          required
+          [disabled]="isLoading" #senhaInput="ngModel"
+        />
+        <div *ngIf="senhaInput.invalid && (senhaInput.dirty || senhaInput.touched)" class="error">
+          Senha é obrigatória.
+        </div>
+      </div>
+      <button type="submit" [disabled]="loginForm.invalid || isLoading">
+        <span *ngIf="!isLoading">Login</span>
+        <span *ngIf="isLoading">Aguarde...</span> </button>
+    </form>
+    <div *ngIf="isLoading" class="loading-message" style="text-align: center; margin-top: 15px;">
+        Conectando...
+        </div>
+    <p *ngIf="errorMessage && !isLoading" class="error">{{ errorMessage }}</p>
+  </div>
+</div>

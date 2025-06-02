@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+  --ifpr-verde-escuro: #004d00;
+  --ifpr-verde-medio: #006400;
+  --ifpr-verde-claro: #008000;
+  --texto-branco: #ffffff;
+  --texto-preto: #333333;
+  --cinza-claro: #f4f4f4;
+  --cinza-medio: #dddddd;
+  --cinza-escuro: #666666;
+  --cor-erro: #dc3545;
+  --cor-aviso: #ffc107;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--cinza-claro);
+  color: var(--texto-preto);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ifpr-verde-escuro);
+  margin-top: 0;
+}
+
+button {
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  border: none;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  background-color: var(--cinza-medio) !important;
+  color: var(--cinza-escuro) !important;
+  cursor: not-allowed;
+  transform: translateY(0);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  font-family: 'Roboto', sans-serif;
+  padding: 10px;
+  border: 1px solid var(--cinza-medio);
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  outline: none;
+  border-color: var(--ifpr-verde-medio);
+  box-shadow: 0 0 0 2px rgba(0, 77, 0, 0.2);
+}
+
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: var(--texto-branco);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.error {
+  color: var(--cor-erro);
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 25px;
+  font-style: normal;
+  color: var(--cinza-escuro);
+  border: 1px solid var(--cinza-medio);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: var(--texto-branco);
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.loading-indicator::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  border: 3px solid rgba(0, 77, 0, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--ifpr-verde-medio);
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
