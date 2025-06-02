@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import dashboardRoutes from './dashboard.routes';
 import alunoRoutes from './aluno.routes';
 import alunoDisciplinaRoutes from './alunoDisciplina.routes';
 import alunoRelatorioRoutes from './alunoRelatorio.routes';
@@ -10,9 +11,12 @@ import notaRoutes from './notas.routes';
 import presencaRoutes from './presencas.routes';
 import professorRoutes from './professores.routes';
 import turmaRoutes from './turma.routes';
+import authRoutes from './auth.routes'; 
 
 const router = Router();
 
+router.use(dashboardRoutes);
+router.use('/', authRoutes);
 router.use('/cursos', cursoRoutes);
 router.use('/alunos', alunoRoutes);
 router.use('/alunos', alunoRelatorioRoutes);
