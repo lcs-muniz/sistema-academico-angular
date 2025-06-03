@@ -1,23 +1,15 @@
 import request from 'supertest';
 import server from '../server';
 import { sequelize } from '../instances/mysql';
-import { Professores } from '../models/Professores';
-import bcrypt from 'bcrypt';
 
 describe('API de Professores - CRUD Protegido', () => {
     let tokenAdminOuProfessorLogado: string;
     let professorIdCriado: number;
 
     beforeAll(async () => {
-        await sequelize.sync({ force: true });
+        await sequelize.sync({ force: true });  // Recria tabelas para esta suíte 
+                                                // -> IMPORTANTE: APENAS PARA TESTES
 
-        const senhaAdminHash = await bcrypt.hash('senhaAdminCrud', 10);
-        const adminProf = await Professores.create({
-            nome: 'Admin Prof Crud',
-            email: 'adminprofcrud@example.com',
-            siape: 'ADMINPROFCRUD',
-            senha: senhaAdminHash
-        });
         const resLogin = await request(server)
             .post('/api/login')
             .send({ identificador: 'ADMINPROFCRUD', senha: 'senhaAdminCrud' });
@@ -28,7 +20,7 @@ describe('API de Professores - CRUD Protegido', () => {
         await sequelize.close();
     });
 
-    it('1. Deve CRIAR um novo professor', async () => {
+    it('🟢 1. Deve CRIAR um novo professor', async () => {
         const novoProfessor = {
             nome: "Professor Teste CRUD",
             email: "profcrud@example.com",
@@ -46,7 +38,7 @@ describe('API de Professores - CRUD Protegido', () => {
         professorIdCriado = response.body.professor.id;
     });
 
-    it('2. Deve BUSCAR o professor criado', async () => {
+    it('🟢 2. Deve BUSCAR o professor criado', async () => {
         const response = await request(server)
             .get(`/api/professores/${professorIdCriado}`)
             .set('Authorization', `Bearer ${tokenAdminOuProfessorLogado}`);
@@ -55,7 +47,7 @@ describe('API de Professores - CRUD Protegido', () => {
     });
 
 
-    it('3. Deve ATUALIZAR o professor criado', async () => {
+    it('🟢 3. Deve ATUALIZAR o professor criado', async () => {
         const dadosAtualizados = { nome: "Professor CRUD Atualizado" };
         const response = await request(server)
             .put(`/api/professores/${professorIdCriado}`)
@@ -65,7 +57,7 @@ describe('API de Professores - CRUD Protegido', () => {
         expect(response.body.professor.nome).toBe(dadosAtualizados.nome);
     });
 
-    it('4. Deve DELETAR o professor criado', async () => {
+    it('🟢 4. Deve DELETAR o professor criado', async () => {
         const response = await request(server)
             .delete(`/api/professores/${professorIdCriado}`)
             .set('Authorization', `Bearer ${tokenAdminOuProfessorLogado}`);
@@ -73,7 +65,7 @@ describe('API de Professores - CRUD Protegido', () => {
         expect(response.body.message).toBe('Professor deletado com sucesso');
     });
 
-    it('5. Deve retornar 404 ao tentar BUSCAR professor deletado', async () => {
+    it('🔴 5. Deve retornar 404 ao tentar BUSCAR professor deletado', async () => {
         const response = await request(server)
             .get(`/api/professores/${professorIdCriado}`)
             .set('Authorization', `Bearer ${tokenAdminOuProfessorLogado}`);

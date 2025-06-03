@@ -4,7 +4,7 @@
   "description": "Para rodar o projeto",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
     "start-dev": "nodemon -e ts,json src/server.ts"
   },
   "author": "",

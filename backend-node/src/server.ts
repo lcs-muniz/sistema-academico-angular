@@ -37,8 +37,11 @@ server.use(errorHandler);
 
 // Iniciar o servidor e exibir a porta no console
 const port = process.env.PORT || 3000; // Defina uma porta padrão se não estiver no .env
-server.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
+
+if (process.env.NODE_ENV !== 'test') {
+    server.listen(port, () => {
+        console.log(`Servidor rodando na porta ${port}`);
+    });
+}
 
 export default server;
