@@ -4,7 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AuthService, UserPayload } from '../auth/auth.service';
 import { DataService } from '../core/data.service';
+import { Aluno } from '../models/aluno.model';
+import { Professor } from '../models/professor.model';
 
+import { NotaAluno } from '../models/nota.model';
+import { PresencaAluno } from '../models/presenca.model';
+import { SituacaoAlunoDisciplina } from '../models/situacao.model';
+import { AlunoReprovado } from '../models/reprovado.model';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -18,7 +24,10 @@ export class DashboardComponent implements OnInit {
 
   selectedAlunoId: string = '';
   selectedDisciplinaId: string = '';
-  apiResult: any = null;
+
+  apiResult: Aluno[] | Professor[] | NotaAluno[] | PresencaAluno[] | SituacaoAlunoDisciplina[] | AlunoReprovado[] | any = null;
+  tipoResultado: 'alunos' | 'professores' | 'notas' | 'presencas' | 'situacaoAluno' | 'reprovadosDisciplina' | 'outro' | null = null;
+
   apiError: string = '';
   isLoading: boolean = false;
 
@@ -37,7 +46,6 @@ export class DashboardComponent implements OnInit {
   isObjectAndEmpty(item: any): boolean {
     return typeof item === 'object' && item !== null && !Array.isArray(item) && Object.keys(item).length === 0;
   }
-
 
   constructor(
     private authService: AuthService,
@@ -61,7 +69,7 @@ export class DashboardComponent implements OnInit {
     this.authService.logout();
   }
 
-  private handleApiResponse(observable: Observable<any>): void {
+  private handleApiResponse(observable: Observable<any>,tipoEsperado: 'alunos' | 'professores' | 'notas' | 'presencas' | 'situacaoAluno' | 'reprovadosDisciplina' | 'outro' = 'outro'): void {
     this.apiResult = null;
     this.apiError = '';
     this.isLoading = true;
@@ -70,6 +78,15 @@ export class DashboardComponent implements OnInit {
       next: (data: any) => {
         this.apiResult = data;
         this.isLoading = false;
+
+        if (Array.isArray(data)) {
+          this.tipoResultado = tipoEsperado;
+        } else {
+          this.tipoResultado = 'outro';
+          if (tipoEsperado !== 'outro') {
+            console.warn(`Esperava um array para '${tipoEsperado}', mas recebeu um objeto. Exibindo como JSON bruto.`);
+          }
+        }
       },
       error: (err: any) => {
         this.apiError = err.error?.error || 'Ocorreu um erro ao buscar os dados.';
@@ -77,13 +94,14 @@ export class DashboardComponent implements OnInit {
           this.apiError = 'Acesso negado para esta operação.';
         }
         this.isLoading = false;
+        this.tipoResultado = null;
         console.error('API Error:', err);
       }
     });
   }
 
   verProfessores(): void {
-    this.handleApiResponse(this.dataService.getProfessores());
+    this.handleApiResponse(this.dataService.getProfessores(), 'professores');
   }
 
   verAlunos(): void {
@@ -92,7 +110,7 @@ export class DashboardComponent implements OnInit {
       this.apiError = 'Acesso negado.';
       return;
     }
-    this.handleApiResponse(this.dataService.getAlunos());
+    this.handleApiResponse(this.dataService.getAlunos(), 'alunos');
   }
 
   getNotasAluno(): void {
@@ -102,7 +120,7 @@ export class DashboardComponent implements OnInit {
       this.apiResult = null;
       return;
     }
-    this.handleApiResponse(this.dataService.getAlunoNotas(this.selectedAlunoId));
+    this.handleApiResponse(this.dataService.getAlunoNotas(this.selectedAlunoId), 'notas');
   }
 
   getPresencasAluno(): void {
@@ -112,7 +130,7 @@ export class DashboardComponent implements OnInit {
       this.apiResult = null;
       return;
     }
-    this.handleApiResponse(this.dataService.getAlunoPresencas(this.selectedAlunoId));
+    this.handleApiResponse(this.dataService.getAlunoPresencas(this.selectedAlunoId), 'presencas');
   }
 
   getSituacaoAluno(): void {
@@ -122,7 +140,7 @@ export class DashboardComponent implements OnInit {
       this.apiResult = null;
       return;
     }
-    this.handleApiResponse(this.dataService.getAlunoSituacao(this.selectedAlunoId));
+    this.handleApiResponse(this.dataService.getAlunoSituacao(this.selectedAlunoId), 'situacaoAluno');
   }
 
   getReprovadosDisciplina(): void {
@@ -132,6 +150,6 @@ export class DashboardComponent implements OnInit {
       this.apiResult = null;
       return;
     }
-    this.handleApiResponse(this.dataService.getDisciplinaReprovados(this.selectedDisciplinaId));
+    this.handleApiResponse(this.dataService.getDisciplinaReprovados(this.selectedDisciplinaId), 'reprovadosDisciplina');
   }
 }
