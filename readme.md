@@ -101,7 +101,7 @@ Com o backend rodando (`npm run dev`), você pode usar uma ferramenta como Postm
 * Para **Aluno**, use o valor do campo `matricula` como "Identificador" e a senha em texto plano (a mesma que você usou para cadastrar via API).
 * Para **Professor**, use o valor do campo `siape` como "Identificador" e a senha em texto plano.
 
-**Também no `/backend-node` contém um arquivo para população para fins de testes das funcionalidades do aplicativo: `/backend-node/seed.sql`, lembrando que precisa conter os Alunos e Professores cadastrados via /POST**
+**Também no `/backend-node` contém um arquivo para população para fins de testes das funcionalidades do aplicativo: `/backend-node/seed.sql`, lembrando que precisa conter os Alunos e Professores cadastrados via /POST para ser autenticado no login**
 
 ## 🧪 Testes Automatizados do Backend
 
