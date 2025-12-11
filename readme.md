@@ -9,6 +9,32 @@ O repositório está organizado da seguinte forma:
 -   **/backend-node**: Contém todo o código da API backend (Node.js, Express, Sequelize).
 -   **/frontend-angular**: Contém todo o código da aplicação frontend (Angular).
 
+## 📘 Contexto e Objetivos
+
+O sistema de gestão acadêmica simula um ambiente escolar com operações de alunos, professores, cursos, turmas, disciplinas, matrículas (N:N), notas e presenças. Objetivos principais:
+- Autenticar alunos e professores (JWT) e proteger rotas conforme perfil.
+- Executar casos de uso acadêmicos (CRUDs, matrícula, lançamento de notas e presença, relatórios).
+- Aplicar princípios de OO (encapsulamento, abstração, polimorfismo) e padrões de projeto.
+- Manter cobertura de testes unitários e de integração.
+
+
+### Entidades e Relacionamentos
+- Entidades: `Aluno`, `Professores`, `Cursos`, `Turmas`, `Disciplina`, `AlunoDisciplina`, `Notas`, `Presencas`.
+- Relacionamentos: 1:N (Curso → Turmas, Professor → Turmas) e N:N (Aluno ↔ Disciplina via `AlunoDisciplina`).
+
+### Casos de Uso Principais
+- Autenticar usuário (aluno por matrícula, professor por SIAPE) e obter token JWT.
+- CRUD de Alunos e Professores (com regras de negócio e hashing de senhas).
+- Matrícula de Aluno em Disciplina (vincular/desvincular, listar por aluno/por disciplina).
+- Lançamento e consulta de Notas.
+- Registro e consulta de Presenças.
+- Relatórios acadêmicos (demonstrados via Decorator).
+
+### Conceitos de OO
+- Encapsulamento: controllers (HTTP) e services (regras de negócio) separados; hashing e validações nos services.
+- Abstração e Polimorfismo: services recebem interfaces de repositório via injeção de dependência (`IAlunoRepository`, `IProfessorRepository`, `IAuthRepository`, `IAlunoDisciplinaRepository`).
+- Herança: uso de `Model` do Sequelize nos modelos e hierarquia do Decorator (`RelatorioDecorator`).
+
 ## 📋 Pré-requisitos
 
 -   [Node.js](https://nodejs.org/) (versão LTS recomendada, que inclui npm)
@@ -115,5 +141,20 @@ Para executar os testes unitários e de integração do backend (Jest + Supertes
     ```bash
     npm test
     ```
+
+### Cobertura de Testes (mínimos exigidos)
+- Testes unitários (≥5) com mocks: `AlunoService`, `ProfessorService`, `AuthService`, `AlunoDisciplinaService`, Decorator de Relatórios, Adapter de Notificações.
+- Testes de integração (≥2): rotas de alunos, professores, autenticação e protegidas usando `supertest`.
+> Estado atual: todos os testes passam (vide saída do CI/local).
+
+## Padrões de Projeto Aplicados
+- Decorator: `services/relatorio` com `RelatorioBase`, `RelatorioDecorator`, `CabecalhoDecorator`, `HtmlDecorator` para composição de saída de relatórios.
+- Adapter: `adapters/EmailAdapter` adapta a interface `INotificador` a uma lib externa mock (`ExternalEmailLib`) usada pelo `NotificacaoService`. Integrado em `AlunoController` e `ProfessorController` para enviar boas-vindas.
+- Repository (Complementar mas não implementado em todos ainda): interfaces e implementações para Aluno, Professor, Auth, AlunoDisciplina, desacoplando Sequelize dos services e habilitando TDD com mocks.
+
+## Justificativa dos Padrões
+- Repository: reduz acoplamento ao ORM, facilita testes unitários (mocks), melhora manutenção das regras de negócio.
+- Decorator: permite enriquecer relatórios sem modificar a implementação base, favorecendo extensão e composição.
+- Adapter: integra serviços internos com APIs externas heterogêneas por meio de uma interface estável (`INotificador`).
 
 ---

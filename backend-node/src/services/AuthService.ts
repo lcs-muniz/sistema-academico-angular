@@ -1,20 +1,20 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Aluno } from '../models/Aluno';
-import { Professores } from '../models/Professores';
+import { IAuthRepository } from '../repositories/interfaces/IAuthRepository';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'senha-super-secreta';
 
 export class AuthService {
+  constructor(private readonly repo: IAuthRepository) {}
   async login(identificador: string, senhaPlaintext: string): Promise<{ token: string; nome: string; id: number; tipo: 'aluno' | 'professor' }> {
-    let usuario: Aluno | Professores | null = null;
+    let usuario: { id: number; nome: string; senha: string } | null = null;
     let tipoUsuario: 'aluno' | 'professor' | null = null;
 
-    usuario = await Aluno.findOne({ where: { matricula: identificador } });
+    usuario = await this.repo.buscarAlunoPorMatricula(identificador);
     if (usuario) {
       tipoUsuario = 'aluno';
     } else {
-      usuario = await Professores.findOne({ where: { siape: identificador } });
+      usuario = await this.repo.buscarProfessorPorSiape(identificador);
       if (usuario) {
         tipoUsuario = 'professor';
       }

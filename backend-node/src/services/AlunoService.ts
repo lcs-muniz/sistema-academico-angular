@@ -1,16 +1,18 @@
 import { Aluno } from '../models/Aluno';
-import { AlunoDisciplina } from '../models/AlunoDisciplina';
 import bcrypt from 'bcrypt';
+import { IAlunoRepository, AlunoCreateDTO, AlunoUpdateDTO } from '../repositories/interfaces/IAlunoRepository';
 
 const SALT_ROUNDS = 10;
 
 export class AlunoService {
+  constructor(private readonly repo: IAlunoRepository) {}
+
   async listar() {
-    return Aluno.findAll();
+    return this.repo.listar();
   }
 
   async buscarPorId(alunoId: number) {
-    const aluno = await Aluno.findByPk(alunoId);
+    const aluno = await this.repo.buscarPorId(alunoId);
     if (!aluno) throw new Error('Aluno não encontrado');
     return aluno;
   }
@@ -20,22 +22,26 @@ export class AlunoService {
       throw new Error('Senha é obrigatória para criar aluno.');
     }
     const hashedPassword = await bcrypt.hash(senha, SALT_ROUNDS);
-    return Aluno.create({ nome, email, matricula, senha: hashedPassword });
+    const dados: AlunoCreateDTO = { nome, email, matricula, senha: hashedPassword };
+    return this.repo.criar(dados);
   }
 
   async atualizar(alunoId: number, dados: Partial<{ nome: string; email: string; matricula: string; senha?: string }>) {
     const aluno = await this.buscarPorId(alunoId);
-    if (dados.senha) {
-      dados.senha = await bcrypt.hash(dados.senha, SALT_ROUNDS);
+    const update: AlunoUpdateDTO = { ...dados };
+    if (update.senha) {
+      update.senha = await bcrypt.hash(update.senha, SALT_ROUNDS);
     }
-    await aluno.update(dados);
-    return aluno;
+    const atualizado = await this.repo.atualizar(alunoId, update);
+    return atualizado ?? aluno; // fallback, mas repo deve retornar atualizado
   }
 
   async deletar(alunoId: number) {
-    const aluno = await this.buscarPorId(alunoId);
-    const vinculo = await AlunoDisciplina.findOne({ where: { alunoId } });
-    if (vinculo) throw new Error('Aluno vinculado a disciplina');
-    await aluno.destroy();
+    await this.buscarPorId(alunoId);
+    const possuiVinculo = await this.repo.possuiVinculoDisciplina(alunoId);
+    if (possuiVinculo) {
+      throw new Error('Aluno vinculado a disciplina');
+    }
+    await this.repo.deletar(alunoId);
   }
 }

@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 
 import { AlunoDisciplinaService } from '../services/AlunoDisciplinaService';
+import { SequelizeAlunoDisciplinaRepository } from '../repositories/implementations/SequelizeAlunoDisciplinaRepository';
 
-const service = new AlunoDisciplinaService();
+const service = new AlunoDisciplinaService(new SequelizeAlunoDisciplinaRepository());
 
 export const listarDisciplinasDoAluno = async ( req: Request, res: Response ): Promise<Response> => {
   try {

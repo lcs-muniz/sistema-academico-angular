@@ -342,7 +342,7 @@
     "yocto-queue": "^0.1.0"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.2.1"
   },
   "scripts": {
     "start:backend": "cd backend-node && npm run start-dev",

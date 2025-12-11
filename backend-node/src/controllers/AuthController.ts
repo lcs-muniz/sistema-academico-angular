@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/AuthService';
+import { SequelizeAuthRepository } from '../repositories/implementations/SequelizeAuthRepository';
 
-const authService = new AuthService();
+const authService = new AuthService(new SequelizeAuthRepository());
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
   const { identificador, senha } = req.body;

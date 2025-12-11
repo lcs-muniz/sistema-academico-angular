@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 
 import { ProfessorService } from '../services/ProfessorService';
+import { SequelizeProfessorRepository } from '../repositories/implementations/SequelizeProfessorRepository';
+import { NotificacaoService } from '../services/Notificacao/NotificacaoService';
+import { EmailAdapter } from '../adapters/EmailAdapter';
+import { ExternalEmailLib } from '../adapters/ExternalEmailLib';
 
-const service = new ProfessorService();
+const service = new ProfessorService(new SequelizeProfessorRepository());
+const notificacao = new NotificacaoService(new EmailAdapter(new ExternalEmailLib()));
 
 export const listarProfessores = async (_req: Request, res: Response): Promise<Response> => {
   const professores = await service.listar();
@@ -21,6 +26,7 @@ export const buscarProfessorPorId = async (req: Request, res: Response): Promise
 export const cadastrarProfessor = async (req: Request, res: Response): Promise<Response> => {
   try {
     const novo = await service.criar(req.body);
+    notificacao.enviarBoasVindas(novo.email, novo.nome).catch(() => {});
     return res.status(201).json({ message: 'Professor cadastrado com sucesso', professor: novo });
   } catch (err: any) {
     return res.status(400).json({ error: err.message });
